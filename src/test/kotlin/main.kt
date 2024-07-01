@@ -4,6 +4,7 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
+
 fun byteArraIntoString(byteArray: ByteArray): String {
     return byteArray.joinToString(separator = ",") { it.toString() }
 }
@@ -27,8 +28,9 @@ fun main() {
     /*
     (byteArraIntoString(og)
     */
-    val newKey = stringArraIntoByteArra("-23,-87,-81,10,69,-20,66,-126,50,9,3,80,-66,-77,6,-57,-14,-103,-14,15,111,103,-97,16,-96,22,-36,120,100,-99,-115,114")
-    val algorithm = "AES" // Replace with your desired algorithm
+    val newKey =
+        stringArraIntoByteArra("-23,-87,-81,10,69,-20,66,-126,50,9,3,80,-66,-77,6,-57,-14,-103,-14,15,111,103,-97,16,-96,22,-36,120,100,-99,-115,114")
+    val algorithm = "AES"
     val secretKey: SecretKey = SecretKeySpec(newKey, algorithm)
 
 
@@ -55,6 +57,9 @@ fun aesEncrypt(data: ByteArray, secretKey: SecretKey): ByteArray {
 
 fun generateAESKey(keySize: Int = 256): SecretKey {
     val keyGenerator = KeyGenerator.getInstance("AES")
-    keyGenerator.init(keySize)
-    return keyGenerator.generateKey()
+    keyGenerator.init(128)
+    val secretKey = keyGenerator.generateKey()
+//    println(secretKey.encoded.size)
+//    println(secretKey.encoded.toString())
+    return secretKey
 }
