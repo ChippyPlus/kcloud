@@ -2,7 +2,6 @@ package kcloud.plugins
 
 import io.ktor.server.application.*
 import io.ktor.server.plugins.defaultheaders.*
-import java.lang.Math.random
 
 fun Application.configureHTTP() {
     install(DefaultHeaders) {
