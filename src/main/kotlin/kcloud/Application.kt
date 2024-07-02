@@ -4,6 +4,7 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import kcloud.plugins.*
+import kcloud.routes.configureAIhRouting
 import kcloud.routes.configureCryptRouting
 import kcloud.routes.configureMathRouting
 import kcloud.routes.configureStorageRouting
@@ -21,4 +22,5 @@ fun Application.module() {
     configureMathRouting()
     configureStorageRouting()
     configureCryptRouting()
+    configureAIhRouting()
 }
