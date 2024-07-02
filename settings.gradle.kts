@@ -1,1 +1,1 @@
-rootProject.name = "kcloud"
+rootProject.name = "sandbox"

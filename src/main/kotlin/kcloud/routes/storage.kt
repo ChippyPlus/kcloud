@@ -13,10 +13,7 @@ fun Application.configureStorageRouting() {
         get("/storage/download") {
 
             /** to check if mandatory arguments are missing*/
-            if ("arg1" !in call.parameters.names()) {
-                call.respond(status = HttpStatusCode.BadRequest, message = mapOf("error" to "arg1"))
-            }
-            val arg1 = call.parameters["arg1"]
+            val arg1 = call.receive<Map<String, String>>()["arg1"]!!
             val f = File("src/main/resources/storage/${arg1}")
 
             /** Tell the client that we are sending a file*/
