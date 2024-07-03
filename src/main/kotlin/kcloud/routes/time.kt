@@ -1,47 +1,52 @@
 package kcloud.routes
 
-import kotlinx.coroutines.*
-
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.Thread.sleep
 
 class Channel {
-    private var count = 0
+    private var count: ULong = 0u
 
     fun increment() {
-        count += 1
+        count += 1u
     }
 
-    fun get(): Int = count
+    fun get(): ULong = count
 
     fun reset() {
-        count = 0
+        count = 0u
     }
 
-    fun set(value: Int) {
+    fun set(value: ULong) {
         count = value
     }
 
-    fun append(value: Int) {
+    fun append(value: ULong) {
         count += value
     }
 
-    fun deAppend(value: Int) {
+    fun deAppend(value: ULong) {
         count -= value
     }
 }
 
-val channel = Channel()
+val timeChannel = Channel()
 
-fun count() {
+suspend fun count() {
     while (true) {
-        sleep(1000)
-        channel.increment()
+        withContext(Dispatchers.IO) {
+            sleep(1000)
+        }
+        timeChannel.increment()
     }
 }
 
@@ -54,20 +59,20 @@ fun Application.configureTimeRouting() {
 
 
             get("/time/get") {
-                call.respond(channel.get())
+                call.respond(timeChannel.get())
             }
             put("/time/reset") {
-                channel.reset()
+                timeChannel.reset()
                 call.response.status(HttpStatusCode.NoContent)
             }
             patch("/time/increment") {
                 val value = call.receive<Map<String, Int>>()["arg1"]!!
-                channel.append(value)
+                timeChannel.append(value.toULong())
                 call.response.status(HttpStatusCode.NoContent)
             }
             patch("/time/decrement") {
                 val value = call.receive<Map<String, Int>>()["arg1"]!!
-                channel.deAppend(value)
+                timeChannel.deAppend(value.toULong())
                 call.response.status(HttpStatusCode.NoContent)
             }
         }

@@ -2,14 +2,12 @@ package kcloud.plugins
 
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import sun.security.util.KeyUtil.validate
 
 fun Application.configureSecurity() {
     install(Authentication) {
-        basic("auth-basic") {
-            realm = "Access to the '/' path"
+        basic("basic-auth") {
             validate { credentials ->
-                if (credentials.name == "admin" && credentials.password == "foobar") {
+                if (credentials.name == "admin" && credentials.password == "password") {
                     UserIdPrincipal(credentials.name)
                 } else {
                     null
