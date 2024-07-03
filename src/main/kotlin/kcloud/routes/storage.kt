@@ -18,7 +18,7 @@ fun Application.configureStorageRouting() {
                 val arg1 = call.receive<Map<String, String>>()["arg1"]!!
                 val f = File("src/main/resources/storage/${arg1}")
 
-                /** Tell the client that we are sending a file*/
+                /** Tell the client that this is sending a file*/
                 call.response.header(
                     HttpHeaders.ContentDisposition,
                     ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, f.name)

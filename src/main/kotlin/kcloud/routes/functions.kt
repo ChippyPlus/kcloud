@@ -10,26 +10,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.io.File
 import java.io.IOException
-import java.lang.Thread.sleep
 import kotlin.collections.set
 
-class FunctionChannel {
-    /** {function name: time to run }    */
-    val data = mapOf("sleep10" to 2, "sleep5" to 3)
-}
 
 
-fun checkForFunctionCalls() {
-    var currentUpTime: ULong
-    while (true) {
-        currentUpTime = timeChannel.get()
-        sleep(1000)
-        if (currentUpTime == (5).toULong()) {
-            println("called")
-            Runtime.getRuntime().exec("./src/main/resources/functionStorage/sleep10")
-        }
-    }
-}
 
 
 fun Application.configureFunctionsRouting() {

@@ -1,3 +1,5 @@
+@file:Suppress("PropertyName")
+
 val kotlin_version: String by project
 val logback_version: String by project
 val ktor_version: String by project
