@@ -8,12 +8,10 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kcloud.kcloudHome
 import java.io.File
 import java.io.IOException
 import kotlin.collections.set
-
-
-
 
 
 fun Application.configureFunctionsRouting() {
@@ -21,8 +19,9 @@ fun Application.configureFunctionsRouting() {
     routing {
         authenticate("basic-auth") {
             post("/functions/activate") {
+
                 val what = call.parameters["a"]!!
-                val pid = Runtime.getRuntime().exec("./src/main/resources/functionStorage/$what").pid().toInt()
+                val pid = Runtime.getRuntime().exec("$kcloudHome/functionStorage/$what").pid().toInt()
                 processes[what] = pid
                 println("called WHAT=\"$what\"")
                 call.response.status(HttpStatusCode.NoContent)

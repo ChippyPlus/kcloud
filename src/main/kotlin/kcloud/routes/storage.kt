@@ -7,6 +7,8 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kcloud.kcloudHome
+import kcloud.log
 import java.io.File
 
 fun Application.configureStorageRouting() {
@@ -14,20 +16,20 @@ fun Application.configureStorageRouting() {
         authenticate("basic-auth") {
             get("/storage/download") {
 
-                /** to check if mandatory arguments are missing*/
                 val arg1 = call.receive<Map<String, String>>()["arg1"]!!
-                val f = File("src/main/resources/storage/${arg1}")
+                val f = File("$kcloudHome/storage/${arg1}")
 
-                /** Tell the client that this is sending a file*/
                 call.response.header(
                     HttpHeaders.ContentDisposition,
                     ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, f.name)
                         .toString()
                 )
                 call.respondFile(f)
+                log("storage", "storage/download", "downloaded \"$arg1\"")
+                log(whereDidItHappen = "storage/download")
             }
             post("/storage/upload") {
-                var fileName: String
+                var fileName = ""
                 val multipartData = call.receiveMultipart()
 
                 multipartData.forEachPart { part ->
@@ -35,7 +37,7 @@ fun Application.configureStorageRouting() {
                         is PartData.FileItem -> {
                             fileName = part.originalFileName as String
                             val fileBytes = part.streamProvider().readBytes()
-                            File("src/main/resources/storage//$fileName").writeBytes(fileBytes)
+                            File("$kcloudHome/storage/$fileName").writeBytes(fileBytes)
                         }
 
                         else -> {}
@@ -43,6 +45,8 @@ fun Application.configureStorageRouting() {
                     part.dispose()
                 }
                 call.respond(mapOf("message" to "Uploaded"))
+                log("storage", "storage/upload", "uploaded \"$fileName\"")
+                log("tasks", "storage/upload", "uploaded \"$fileName\"")
             }
         }
     }
