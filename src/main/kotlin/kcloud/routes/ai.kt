@@ -17,11 +17,19 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 
-fun Application.configureAIhRouting() {
+fun checkAISupport(): Boolean = System.getProperty("os.arch") != "armv61"
 
+
+fun Application.configureAIhRouting() {
     routing {
+
+
         authenticate("basic-auth") {
             post("/ai/ollama/generate") {
+                if (!checkAISupport()) {
+                    call.respond(message = mapOf("error" to "BadArch"), status = HttpStatusCode.InternalServerError)
+                    return@post
+                }
                 val client = HttpClient(CIO) {
                     engine {
                         requestTimeout = 0

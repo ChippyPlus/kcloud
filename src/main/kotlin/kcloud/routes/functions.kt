@@ -71,11 +71,9 @@ fun Application.configureFunctionsRouting() {
         }
         get("/functions/download") {
 
-            /** to check if mandatory arguments are missing*/
             val arg1 = call.receive<Map<String, String>>()["arg1"]!!
             val f = File("src/main/resources/functions/${arg1}")
 
-            /** Tell the client that it's sending a file */
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, f.name).toString()
