@@ -17,8 +17,9 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-val kcloudHome: String = System.getenv("KCLOUD_HOME") ?: "/${System.getenv("HOME")}/.kcloud"
+var kcloudHome: String = System.getenv("KCLOUD_HOME") ?: "${System.getenv("HOME")}/.kcloud"
 fun main() {
+    println(kcloudHome)
     val neededStartDirs = arrayOf(
         "$kcloudHome/", "$kcloudHome//logs", "$kcloudHome/static", "$kcloudHome/storage", "$kcloudHome/functions"
     )
@@ -31,7 +32,7 @@ fun main() {
 
 
     embeddedServer(
-        Netty, port = 8080, host = "localhost", module = Application::module, watchPaths = listOf("src/main")
+        Netty, port = 8080, host = "0.0.0.0", module = Application::module, watchPaths = listOf("src/main")
     ).start(wait = true)
 }
 

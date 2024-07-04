@@ -26,8 +26,8 @@ class Channel {
         count = 0u
     }
 
-    fun set(value: ULong) {
-        count = value
+    fun set(value: Int) {
+        count = value.toULong()
     }
 
     fun append(value: ULong) {
@@ -57,7 +57,6 @@ fun Application.configureTimeRouting() {
     routing {
         authenticate("basic-auth") {
 
-
             get("/time/get") {
                 call.respond(timeChannel.get())
             }
@@ -73,6 +72,11 @@ fun Application.configureTimeRouting() {
             patch("/time/decrement") {
                 val value = call.receive<Map<String, Int>>()["arg1"]!!
                 timeChannel.deAppend(value.toULong())
+                call.response.status(HttpStatusCode.NoContent)
+            }
+            put("/time/set") {
+                val value = call.receive<Map<String, Int>>()["arg1"]!!
+                timeChannel.set(value)
                 call.response.status(HttpStatusCode.NoContent)
             }
         }
