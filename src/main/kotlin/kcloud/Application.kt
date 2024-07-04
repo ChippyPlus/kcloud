@@ -22,12 +22,9 @@ fun main() {
     val neededStartDirs = arrayOf(
         "$kcloudHome/", "$kcloudHome//logs", "$kcloudHome/static", "$kcloudHome/storage", "$kcloudHome/functions"
     )
-
     for (i in neededStartDirs) {
-
         if (!File(i).exists()) {
             File(i).mkdirs()
-            println("created $i")
         }
     }
 
