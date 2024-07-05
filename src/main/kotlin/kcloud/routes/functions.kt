@@ -10,7 +10,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kcloud.kcloudHome
 import java.io.File
-import java.io.IOException
 import kotlin.collections.set
 
 
@@ -20,31 +19,22 @@ fun Application.configureFunctionsRouting() {
         authenticate("basic-auth") {
             post("/functions/activate") {
 
-                val what = call.parameters["a"]!!
-                val pid = Runtime.getRuntime().exec("$kcloudHome/functionStorage/$what").pid().toInt()
+
+                val what = call.receive<Map<String, String>>()["arg1"].toString()
+                val pid = Runtime.getRuntime().exec("$kcloudHome/functions/$what").pid().toInt()
                 processes[what] = pid
                 println("called WHAT=\"$what\"")
                 call.response.status(HttpStatusCode.NoContent)
 
             }
             delete("/functions/deactivate") {
-                val what = call.parameters["a"]
+                val what = call.receive<Map<String, String>>()["arg1"]
                 if (processes[what] == null) {
                     call.response.status(HttpStatusCode.NotFound)
                     return@delete // To make sure no more code gets executed.
                 }
-                try {
-                    val code = Runtime.getRuntime().exec("pkill -9 -P ${processes[what]}").exitValue()
-                    if (code != 0) {
-                        call.respond(
-                            message = mapOf("error" to "ShellError"), status = HttpStatusCode.InternalServerError
-                        )
-                        return@delete
-                    }
-                } catch (ioError: IOException) {
-                    call.respond(message = mapOf("error" to "NoFoundPID"), status = HttpStatusCode.NotFound)
-                }
-
+                Runtime.getRuntime().exec("pkill -9 -P ${processes[what]}")
+                processes.remove(what)
                 call.response.status(HttpStatusCode.NoContent)
 
 

@@ -9,43 +9,88 @@ import io.ktor.server.routing.*
 import kcloud.log
 import kotlin.math.pow
 
+
+fun mathLog(where: String, content: String) {
+    log(fileNameWithOutExt = "math", whereDidItHappen = "math/$where", content = content)
+    log(whereDidItHappen = where)
+}
+
+
+fun Double.roundIfInt(): Any {
+    return if (this == this.toInt().toDouble()) {
+        this.toInt()
+    } else {
+        this
+    }
+}
+
+
+
 fun Application.configureMathRouting() {
     routing {
         authenticate("basic-auth") {
             post("/math/{operation}") {
 
 
-                val body = call.receive<Map<String, Int>>()
-                val arg1 = body["arg1"]!!
-                val arg2 = body["arg2"]!!
+                val body = call.receive<Map<String, Any>>()
+                var arg1 =
+                    body["arg1"] ?: return@post call.respondText(text = "arg1", status = HttpStatusCode.BadRequest)
+                var arg2 =
+                    body["arg2"] ?: return@post call.respondText(text = "arg2", status = HttpStatusCode.BadRequest)
 
-                if (call.parameters["operation"] == "add") {
-                    call.respond(mapOf("message" to (arg1 + arg2)))
-                    log("math", "math/add", "added")
-                    log(whereDidItHappen = "math/add")
-                } else if (call.parameters["operation"] == "sub") {
-                    call.respond(mapOf("message" to (arg1 - arg2)))
-                    log("math", "math/sub", "subtracted")
-                    log(whereDidItHappen = "math/sub")
-                } else if (call.parameters["operation"] == "mul") {
-                    call.respond(mapOf("message" to (arg1 * arg2)))
-                    log("math", "math/mul", "multiplied")
-                    log(whereDidItHappen = "math/mul")
-                } else if (call.parameters["operation"] == "div") {
-                    call.respond(mapOf("message" to (arg1 / arg2)))
-                    log("math", "math/div", "divided")
-                    log(whereDidItHappen = "math/div")
-                } else if (call.parameters["operation"] == "pow") {
-                    call.respond(mapOf("message" to (arg1.toDouble().pow(arg2))))
-                    log("math", "math/pow", "powered")
-                    log(whereDidItHappen = "math/pow")
-                } else if (call.parameters["operation"] == "mod") {
-                    log("math", "math/mod", "modulus-ed")
-                    log(whereDidItHappen = "math/mod")
-                    call.respond(mapOf("message" to (arg1 % arg2)))
-                } else {
-                    call.respond(status = HttpStatusCode.NotFound, mapOf("error" to "NoMathOp"))
+                try {
+
+                    arg1 = arg1 as Double
+                    arg2 = arg2 as Double
+                } catch (numberFormatError: ClassCastException) {
+                    return@post call.respondText(text = "numberFormatError", status = HttpStatusCode.BadRequest)
                 }
+
+                when (call.parameters["operation"]) {
+                    "add" -> {
+                        val answer= arg1 + arg2
+                        call.respondText(answer.roundIfInt().toString())
+                        mathLog("add", "added")
+
+                    }
+
+                    "sub" -> {
+                        val answer = arg1 - arg2
+                        call.respondText(answer.roundIfInt().toString())
+                        mathLog("sub", "subtracted")
+                    }
+
+                    "mul" -> {
+                        val answer = arg1 * arg2
+                        call.respondText(answer.roundIfInt().toString())
+                        mathLog("mul", "multiply")
+                    }
+
+                    "div" -> {
+                        val answer = arg1 / arg2
+                        call.respondText(answer.roundIfInt().toString())
+                        mathLog("div", "divided")
+                    }
+
+                    "pow" -> {
+                        val answer = arg1.toDouble().pow(arg2)
+                        call.respondText(answer.roundIfInt().toString())
+                        mathLog("pow", "powered")
+                    }
+
+                    "mod" -> {
+                        val answer = arg1 % arg2
+                        call.respondText(answer.roundIfInt().toString())
+                        mathLog("mod", "modulus-ed")
+                    }
+                    // TODO add math/factorial
+
+
+                    else -> {
+                        call.respond(message = "NoMathOp", status = HttpStatusCode.NotFound)
+                    }
+                }
+
             }
         }
     }
