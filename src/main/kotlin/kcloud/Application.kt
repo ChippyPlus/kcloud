@@ -17,9 +17,11 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
-
-val kcloudPort  = System.getenv("KCLOUD_PORT").toInt()
+val kcloudPort = if (System.getenv("KCLOUD_PORT") == null) {
+    2294
+} else {
+    System.getenv("KCLOUD_PORT").toInt()
+}
 var kcloudHome: String = System.getenv("KCLOUD_HOME") ?: "${System.getenv("HOME")}/.kcloud"
 fun main() {
     println("NEW HOME => $kcloudHome, NEW PORT => $kcloudPort")
