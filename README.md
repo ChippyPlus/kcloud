@@ -15,4 +15,4 @@ please not this is still very much in development and might be difficult to run 
 - [ ] File compression
 - [x] working auth
 - [x] serverless functions
-- [x] a built lib for it      
+- [x] a built lib for it  (coming to github soon)
