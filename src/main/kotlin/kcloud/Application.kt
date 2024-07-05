@@ -36,7 +36,7 @@ fun main() {
 
 
     embeddedServer(
-        Netty, port = 8080, host = "0.0.0.0", module = Application::module, watchPaths = listOf("src/main")
+        Netty, port = kcloudPort, host = "0.0.0.0", module = Application::module, watchPaths = listOf("src/main")
     ).start(wait = true)
 }
 
