@@ -17,9 +17,12 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+
+
+val kcloudPort  = System.getenv("KCLOUD_PORT").toInt()
 var kcloudHome: String = System.getenv("KCLOUD_HOME") ?: "${System.getenv("HOME")}/.kcloud"
 fun main() {
-    println(kcloudHome)
+    println("NEW HOME => $kcloudHome, NEW PORT => $kcloudPort")
     val neededStartDirs = arrayOf(
         "$kcloudHome/", "$kcloudHome//logs", "$kcloudHome/static", "$kcloudHome/storage", "$kcloudHome/functions"
     )
@@ -28,7 +31,6 @@ fun main() {
             File(i).mkdirs()
         }
     }
-
 
 
     embeddedServer(
