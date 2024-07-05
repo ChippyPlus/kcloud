@@ -1,8 +1,12 @@
-coming soon but for now heres a road map   
-keep in mind built with intellij idea professional   
-please not this is still very much in development and might be difficult to run effectively on other platforms  
+# KCLOUD (INPROGRESS)
+This project is the successor of pycloud at [this link](https://github.com/chippyplus/pycloud)    
+Kcloud is a serverless server that has many endpoints to preform sertain functions      
+This project is incompetent and no were finish. Please dont clone or use this project untill a stable/usable complete version is made    
 
 
+## How to setup
+
+## Roadmap 
 - [x] basic math operations  
 - [x] File upload and download      
 - [x] data dencryption   
