@@ -14,7 +14,7 @@ This project is incompetent and no were finish. Please dont clone or use this pr
 - [x] data encryption   
 - [x]  AI, with ollama  
 - [ ]  A web scraper   
-- [ ]  A scheduler to proform actions at certain times
+- [ ] ~ A scheduler to proform actions at certain times~ Dont want to do
 - [x] Time data   
 - [ ] Control sensors on the pico    
 - [ ] File compression
