@@ -5,6 +5,7 @@ This project is incompetent and no were finish. Please dont clone or use this pr
 
 
 ## How to setup
+[The github wiki page for instructions](https://github.com/ChippyPlus/kcloud/wiki/internalBuildAndDeploy)
 
 ## Roadmap 
 - [x] basic math operations  
