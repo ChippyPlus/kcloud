@@ -7,6 +7,7 @@ fun Application.configureSecurity() {
     install(Authentication) {
         basic("basic-auth") {
             validate { credentials ->
+
                 if (credentials.name == "admin" && credentials.password == "password") {
                     UserIdPrincipal(credentials.name)
                 } else {

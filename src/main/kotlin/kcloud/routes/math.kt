@@ -29,8 +29,8 @@ fun Double.roundIfInt(): Any {
 fun Application.configureMathRouting() {
     routing {
         authenticate("basic-auth") {
-            post("/math/{operation}") {
 
+            post("/math/{operation}") {
 
                 val body = call.receive<Map<String, Any>>()
                 var arg1 =
@@ -49,38 +49,37 @@ fun Application.configureMathRouting() {
                 when (call.parameters["operation"]) {
                     "add" -> {
                         val answer= arg1 + arg2
-                        call.respondText(answer.roundIfInt().toString())
+                        call.respond(mapOf("message" to answer.roundIfInt().toString()))
                         mathLog("add", "added")
-
                     }
 
                     "sub" -> {
                         val answer = arg1 - arg2
-                        call.respondText(answer.roundIfInt().toString())
+                        call.respond(mapOf("message" to answer.roundIfInt().toString()))
                         mathLog("sub", "subtracted")
                     }
 
                     "mul" -> {
                         val answer = arg1 * arg2
-                        call.respondText(answer.roundIfInt().toString())
+                        call.respond(mapOf("message" to answer.roundIfInt().toString()))
                         mathLog("mul", "multiply")
                     }
 
                     "div" -> {
                         val answer = arg1 / arg2
-                        call.respondText(answer.roundIfInt().toString())
+                        call.respond(mapOf("message" to answer.roundIfInt().toString()))
                         mathLog("div", "divided")
                     }
 
                     "pow" -> {
                         val answer = arg1.toDouble().pow(arg2)
-                        call.respondText(answer.roundIfInt().toString())
+                        call.respond(mapOf("message" to answer.roundIfInt().toString()))
                         mathLog("pow", "powered")
                     }
 
                     "mod" -> {
                         val answer = arg1 % arg2
-                        call.respondText(answer.roundIfInt().toString())
+                        call.respond(mapOf("message" to answer.roundIfInt().toString()))
                         mathLog("mod", "modulus-ed")
                     }
                     // TODO add math/factorial

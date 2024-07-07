@@ -31,20 +31,25 @@ fun Application.configureStorageRouting() {
             post("/storage/upload") {
                 var fileName = ""
                 val multipartData = call.receiveMultipart()
-
+                val filePath = "$kcloudHome/storage/$fileName"
                 multipartData.forEachPart { part ->
                     when (part) {
                         is PartData.FileItem -> {
                             fileName = part.originalFileName as String
                             val fileBytes = part.streamProvider().readBytes()
-                            File("$kcloudHome/storage/$fileName").writeBytes(fileBytes)
+
+                            File(filePath).writeBytes(fileBytes)
                         }
 
                         else -> {}
                     }
                     part.dispose()
                 }
-                call.respond(mapOf("message" to "Uploaded"))
+                call.respond(status = HttpStatusCode.OK, message = mapOf(
+                    "message" to "uploaded",
+                    "location" to fileName,
+                    "real" to filePath
+                ))
                 log("storage", "storage/upload", "uploaded \"$fileName\"")
                 log("tasks", "storage/upload", "uploaded \"$fileName\"")
             }

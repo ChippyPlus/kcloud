@@ -1,6 +1,5 @@
 package kcloud.routes
 
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
@@ -56,28 +55,39 @@ fun Application.configureTimeRouting() {
     GlobalScope.launch { count() }
     routing {
         authenticate("basic-auth") {
-
             get("/time/get") {
-                call.respond(timeChannel.get())
+                call.respond(message = mapOf("message" to timeChannel.get()))
             }
             put("/time/reset") {
                 timeChannel.reset()
-                call.response.status(HttpStatusCode.NoContent)
+                val timeBefore = timeChannel.get()
+                call.respond(
+                    message = mapOf("message" to "updated", "before" to timeBefore)
+                )
             }
             patch("/time/increment") {
                 val value = call.receive<Map<String, Int>>()["arg1"]!!
+                val timeBefore = timeChannel.get()
                 timeChannel.append(value.toULong())
-                call.response.status(HttpStatusCode.NoContent)
+                call.respond(
+                    message = mapOf("message" to "updated", "before" to timeBefore, "after" to timeChannel.get())
+                )
             }
             patch("/time/decrement") {
                 val value = call.receive<Map<String, Int>>()["arg1"]!!
+                val timeBefore = timeChannel.get()
                 timeChannel.deAppend(value.toULong())
-                call.response.status(HttpStatusCode.NoContent)
+                call.respond(
+                    message = mapOf("message" to "updated", "before" to timeBefore, "after" to timeChannel.get())
+                )
             }
             put("/time/set") {
                 val value = call.receive<Map<String, Int>>()["arg1"]!!
+                val timeBefore = timeChannel.get()
                 timeChannel.set(value)
-                call.response.status(HttpStatusCode.NoContent)
+                call.respond(
+                    message = mapOf("message" to "updated", "before" to timeBefore)
+                )
             }
         }
     }
