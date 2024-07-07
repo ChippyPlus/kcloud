@@ -1,5 +1,7 @@
 @file:Suppress("PropertyName")
 
+
+
 val kotlin_version: String by project
 val logback_version: String by project
 val ktor_version: String by project
@@ -31,6 +33,7 @@ repositories {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-server-html-builder:$ktor_version") // HTML support
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")

@@ -1,28 +1,48 @@
 package kcloud.plugins
 
-import io.ktor.resources.*
+import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.http.content.*
-import io.ktor.server.resources.*
-import io.ktor.server.resources.Resources
-import io.ktor.server.response.*
+import io.ktor.server.html.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.Serializable
-
+import kotlinx.html.FormEncType
+import kotlinx.html.*
 fun Application.configureRouting() {
-    install(Resources)
     routing {
         get("/") {
-            call.respondText("Hello World!")
-        }
-        staticResources("/static", "static")
+            val name = "Ktor"
+            call.respondHtml(HttpStatusCode.OK) {
+                head {
+                    title {
+                        +name
+                    }
+                }
+                body {
+                    h1 {
+                        +"Hello from $name!"
+                    }
+                }
+            }
 
-        get<Articles> { article -> // Get all articles
-            call.respond("List of articles sorted starting from ${article.sort}")
+        }
+        get("/html-dsl/login") {
+            call.respondHtml {
+                body {
+                    form(action = "/html-dsl/login", encType = FormEncType.applicationXWwwFormUrlEncoded, method = FormMethod.post) {
+                        p {
+                            +"Username:"
+                            textInput(name = "username")
+                        }
+                        p {
+                            +"Password:"
+                            textInput(name = "password")
+                        }
+                        p {
+                            submitInput {value= "login"}
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
-@Serializable
-@Resource("/articles")
-class Articles(val sort: String? = "new")

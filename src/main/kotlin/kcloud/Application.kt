@@ -33,15 +33,13 @@ fun main() {
             File(i).mkdirs()
         }
     }
-
-
+    System.setProperty("io.ktor.development", "true")
     embeddedServer(
-        Netty, port = kcloudPort, host = "0.0.0.0", module = Application::module, watchPaths = listOf("src/main")
+        Netty, port = kcloudPort , host = "0.0.0.0", module = Application::module, watchPaths = listOf("classes","libs"),
     ).start(wait = true)
 }
 
 fun Application.module() {
-    System.setProperty("io.ktor.development", "true")
     configureSecurity()
     configureFunctionsRouting()
     configureTimeRouting()
