@@ -13,7 +13,7 @@ import java.io.File
 
 fun Application.configureStorageRouting() {
     routing {
-        authenticate("basic-auth") {
+        authenticate("basic-auth-STORAGE/DOWNLOAD") {
             get("/storage/download") {
 
                 val arg1 = call.receive<Map<String, String>>()["arg1"]!!
@@ -28,6 +28,8 @@ fun Application.configureStorageRouting() {
                 log("storage", "storage/download", "downloaded \"$arg1\"")
                 log(whereDidItHappen = "storage/download")
             }
+        }
+        authenticate("basic-auth-STORAGE/UPLOAD") {
             post("/storage/upload") {
                 var fileName = ""
                 val multipartData = call.receiveMultipart()
@@ -38,18 +40,18 @@ fun Application.configureStorageRouting() {
                             fileName = part.originalFileName as String
                             val fileBytes = part.streamProvider().readBytes()
 
-                            File(filePath).writeBytes(fileBytes)
+                            File("$filePath/$fileName").writeBytes(fileBytes)
                         }
 
                         else -> {}
                     }
                     part.dispose()
                 }
-                call.respond(status = HttpStatusCode.OK, message = mapOf(
-                    "message" to "uploaded",
-                    "location" to fileName,
-                    "real" to filePath
-                ))
+                call.respond(
+                    status = HttpStatusCode.OK, message = mapOf(
+                        "message" to "uploaded", "location" to fileName, "real" to filePath
+                    )
+                )
                 log("storage", "storage/upload", "uploaded \"$fileName\"")
                 log("tasks", "storage/upload", "uploaded \"$fileName\"")
             }

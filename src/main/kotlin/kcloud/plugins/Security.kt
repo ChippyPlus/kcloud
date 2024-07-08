@@ -37,9 +37,9 @@ fun check(items: Array<String>): MutableMap<String, ByteArray> {
     val userAuthData: Map<String, Any?> = gson.fromJson(userTextData, object : TypeToken<Map<String, Any?>>() {}.type)
     val usersAndPasswords = emptyMap<String, ByteArray>().toMutableMap()
     for (user in userAuthData) {
-        val data = user.value as Map<*, *>
+        val data = (user.value as Map<*, *>).toMutableMap()
         for (perm in items) {
-            if (perm in data["allowed"] as List<*>) {
+            if (perm in data["allowed"] as List<*> || "ALL" in data["allowed"] as List<*>) {
                 usersAndPasswords[user.key] = digestFunction(data["password"].toString())
             }
         }
@@ -56,7 +56,8 @@ fun Application.configureSecurity() {
                 val gson = Gson()
                 val userAuthData: Map<String, Any?> =
                     gson.fromJson(userTextData, object : TypeToken<Map<String, Any?>>() {}.type)
-                val hashedUserTable = UserHashedTableAuth(table = getUsersAndPasswords(userAuthData), digester = digestFunction)
+                val hashedUserTable =
+                    UserHashedTableAuth(table = getUsersAndPasswords(userAuthData), digester = digestFunction)
                 hashedUserTable.authenticate(credentials)
             }
         }
@@ -70,13 +71,52 @@ fun Application.configureSecurity() {
 
         basic("basic-auth-STORAGE/UPLOAD") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(arrayOf(""))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(
+                    arrayOf(
+                        "STU", // STorage Upload
+                        "GEU", // GEneric Upload
+                        "STA"  // STorage All
+                    )
+                )
                 val hashedUserTable = UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction)
                 hashedUserTable.authenticate(credentials)
             }
         }
-
-
+        basic("basic-auth-STORAGE/DOWNLOAD") {
+            validate { credentials ->
+                UserHashedTableAuth(
+                    table = check(
+                        arrayOf(
+                            "STD", "GED", "STA"
+                        )
+                    ), digester = digestFunction
+                ).authenticate(credentials)
+            }
+        }
+        basic("basic-auth-functions/upload") {
+            validate { credentials ->
+                UserHashedTableAuth(
+                    table = check(
+                        arrayOf(
+                            "FUU", "GEU", "FUA"
+                        )
+                    ), digester = digestFunction
+                ).authenticate(credentials)
+            }
+        }
+        basic("basic-auth-functions/download") {
+            validate { credentials ->
+                UserHashedTableAuth(
+                    table = check(
+                        arrayOf(
+                            "FUD", "GED", "FUA"
+                        )
+                    ), digester = digestFunction
+                ).authenticate(credentials)
+            }
+        }
+        TODO("add more for all endpoints then apply")
     }
 }
+
 
