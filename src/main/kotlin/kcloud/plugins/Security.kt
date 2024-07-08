@@ -12,8 +12,6 @@ import java.io.File
 val digestFunction = getDigestFunction("SHA-256") { "ktor${it.length}" }
 
 
-
-
 fun getUsersAndPasswords(userAuthData: Map<String, Any?>): Map<String, ByteArray> {
     val usersAndPasswords = emptyMap<String, ByteArray>().toMutableMap()
     for (user in userAuthData) {
@@ -25,12 +23,28 @@ fun getUsersAndPasswords(userAuthData: Map<String, Any?>): Map<String, ByteArray
 }
 
 fun getUserInfo(userAuthData: Map<String, Any>): Map<String, Any> {
-    val usersAndPasswords = emptyMap<String, Any>().toMutableMap()
+    val usersInfoMap = emptyMap<String, Any>().toMutableMap()
     for (user in userAuthData) {
         val data = user.value as Map<*, *>
-        usersAndPasswords[user.key] = data
+        usersInfoMap[user.key] = data
     }
-    return usersAndPasswords.toMap()
+    return usersInfoMap.toMap()
+}
+
+fun check(items: Array<String>): MutableMap<String, ByteArray> {
+    val userTextData = File("$kcloudHome/auth/users.json").readText()
+    val gson = Gson()
+    val userAuthData: Map<String, Any?> = gson.fromJson(userTextData, object : TypeToken<Map<String, Any?>>() {}.type)
+    val usersAndPasswords = emptyMap<String, ByteArray>().toMutableMap()
+    for (user in userAuthData) {
+        val data = user.value as Map<*, *>
+        for (perm in items) {
+            if (perm in data["allowed"] as List<*>) {
+                usersAndPasswords[user.key] = digestFunction(data["password"].toString())
+            }
+        }
+    }
+    return usersAndPasswords
 }
 
 
@@ -42,13 +56,27 @@ fun Application.configureSecurity() {
                 val gson = Gson()
                 val userAuthData: Map<String, Any?> =
                     gson.fromJson(userTextData, object : TypeToken<Map<String, Any?>>() {}.type)
-                val hashedUserTable = UserHashedTableAuth(
-                    table = getUsersAndPasswords(userAuthData), digester = digestFunction
-                )
-                println("working!!!!!!!!!!!!!!!!!!!")
+                val hashedUserTable = UserHashedTableAuth(table = getUsersAndPasswords(userAuthData), digester = digestFunction)
                 hashedUserTable.authenticate(credentials)
             }
         }
+        basic("basic-auth-MATH") {
+            validate { credentials ->
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(arrayOf("MAT"))
+                val hashedUserTable = UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction)
+                hashedUserTable.authenticate(credentials)
+            }
+        }
+
+        basic("basic-auth-STORAGE/UPLOAD") {
+            validate { credentials ->
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(arrayOf(""))
+                val hashedUserTable = UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction)
+                hashedUserTable.authenticate(credentials)
+            }
+        }
+
+
     }
 }
 
