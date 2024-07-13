@@ -28,6 +28,7 @@ fun Double.roundIfInt(): Any {
 fun Application.configureMathRouting() {
     routing {
             authenticate("basic-auth-MATH") {
+                // Yes they are all there. I was shocked too
                 post("/math/{operation}") {
 
                     val body = call.receive<Map<String, Any>>()

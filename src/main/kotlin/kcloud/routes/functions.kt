@@ -101,7 +101,6 @@ fun Application.configureFunctionsRouting() {
                 log(whereDidItHappen = subEndPointName)
             }
 
-
         }
     }
 }
