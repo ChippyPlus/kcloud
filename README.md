@@ -13,11 +13,11 @@ This project is incompetent and no were finish. Please dont clone or use this pr
 - [x] data dencryption   
 - [x] data encryption   
 - [x]  AI, with ollama  
-- [ ]  A web scraper   
+- [ ]  API ninja support
 - [ ] ~ A scheduler to proform actions at certain times~ Dont want to do
 - [x] Time data   
-- [ ] Control sensors on the pico    
-- [ ] File compression
-- [x] working auth
+- [ ] Control sensors on the pico WH
+- [ ] File compression(with gzip or tar)
+- [ ] working auth( busy with)
 - [x] serverless functions
 - [x] a built lib for it  (coming to github soon)
