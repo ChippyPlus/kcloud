@@ -52,9 +52,11 @@ suspend fun count() {
 
 @OptIn(DelicateCoroutinesApi::class)
 fun Application.configureTimeRouting() {
-    GlobalScope.launch { count() }
+    GlobalScope.launch {
+        count()
+    }
     routing {
-        authenticate("basic-auth-TINE/GET") {
+        authenticate("basic-auth-TIME/GET") {
             get("/time/get") {
                 call.respond(message = mapOf("message" to timeChannel.get()))
             }

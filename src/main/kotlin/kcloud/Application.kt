@@ -8,6 +8,7 @@ import kcloud.plugins.configureRouting
 import kcloud.plugins.configureSecurity
 import kcloud.plugins.configureSerialization
 import kcloud.routes.configureAIhRouting
+import kcloud.routes.configureAdminRouting
 import kcloud.routes.configureCryptRouting
 import kcloud.routes.configureFunctionsRouting
 import kcloud.routes.configureMathRouting
@@ -33,19 +34,22 @@ fun main() {
             File(i).mkdirs()
         }
     }
-    System.setProperty("io.ktor.development", "true")
     embeddedServer(
-        Netty, port = kcloudPort , host = "0.0.0.0", module = Application::module, watchPaths = listOf("classes","libs"),
+        Netty, port = kcloudPort, host = "0.0.0.0", module = Application::module,
+        watchPaths = listOf("classes", "libs"),
     ).start(wait = true)
 }
 
 fun Application.module() {
     configureSecurity()
+    configureAdminRouting()
+    configureSerialization()
+    configureHTTP()
+    configureRouting()
+    /** System Routes */
+
     configureFunctionsRouting()
     configureTimeRouting()
-    configureHTTP()
-    configureSerialization()
-    configureRouting()
     configureMathRouting()
     configureStorageRouting()
     configureCryptRouting()

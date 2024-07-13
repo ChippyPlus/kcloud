@@ -25,14 +25,7 @@ fun getUsersAndPasswords(userAuthData: Map<String, Any?>): Map<String, ByteArray
     return usersAndPasswords.toMap()
 }
 
-fun getUserInfo(userAuthData: Map<String, Any>): Map<String, Any> {
-    val usersInfoMap = emptyMap<String, Any>().toMutableMap()
-    for (user in userAuthData) {
-        val data = user.value as Map<*, *>
-        usersInfoMap[user.key] = data
-    }
-    return usersInfoMap.toMap()
-}
+
 
 fun check(items: Array<String>): MutableMap<String, ByteArray> {
     val userTextData = File("$kcloudHome/auth/users.json").readText()
@@ -91,25 +84,25 @@ fun Application.configureSecurity() {
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
-        basic("basic-auth-FUNCTION/UPLOAD") {
+        basic("basic-auth-FUNCTIONS/UPLOAD") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionUpload))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
-        basic("basic-auth-FUNCTION/DOWNLOAD") {
+        basic("basic-auth-FUNCTIONS/DOWNLOAD") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionDownload))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
-        basic("basic-auth-FUNCTION/ACTIVATE") {
+        basic("basic-auth-FUNCTIONS/ACTIVATE") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionActivate))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
-        basic("basic-auth-FUNCTION/DEACTIVATE") {
+        basic("basic-auth-FUNCTIONS/DEACTIVATE") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionDeactivate))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)

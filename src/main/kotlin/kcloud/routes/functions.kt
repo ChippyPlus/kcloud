@@ -84,7 +84,7 @@ fun Application.configureFunctionsRouting() {
                 log(endpointNameForLog, subEndpointNameForLog, "ERROR | 500 | gone-to-far")
             }
         }
-        authenticate("basic-auth-FUNCTION/DOWNLOAD") {
+        authenticate("basic-auth-FUNCTIONS/DOWNLOAD") {
             val subEndPointName = "/functions/download"
             get(subEndPointName) {
 
