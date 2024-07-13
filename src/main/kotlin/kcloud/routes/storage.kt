@@ -54,6 +54,7 @@ fun Application.configureStorageRouting() {
                 )
                 log("storage", "storage/upload", "uploaded \"$fileName\"")
                 log("tasks", "storage/upload", "uploaded \"$fileName\"")
+                // LEGACY LOGGING UP HERE !!!
             }
         }
     }

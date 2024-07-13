@@ -66,6 +66,7 @@ fun Application.configureSecurity() {
                 hashedUserTable.authenticate(credentials)
             }
         }
+
         basic("basic-auth-MATH") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> =
@@ -74,9 +75,7 @@ fun Application.configureSecurity() {
                 hashedUserTable.authenticate(credentials)
             }
         }
-
-
-        basic("basic-auth-STORAGE-UPLOAD") {
+        basic("basic-auth-STORAGE/UPLOAD") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> =
                     check(allPrivileges.getPrivilege(Endpoints.StorageUpload))
@@ -84,38 +83,38 @@ fun Application.configureSecurity() {
                 hashedUserTable.authenticate(credentials)
             }
         }
-        basic("basic-auth-STORAGE-DOWNLOAD") {
+        basic("basic-auth-STORAGE/DOWNLOAD") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> =
                     check(allPrivileges.getPrivilege(Endpoints.StorageDownload))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
-        basic("basic-auth-FUNCTION-UPLOAD") {
+        basic("basic-auth-FUNCTION/UPLOAD") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionUpload))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
-        basic("basic-auth-FUNCTION-DOWNLOAD") {
+        basic("basic-auth-FUNCTION/DOWNLOAD") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionDownload))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
-        basic("basic-auth-FUNCTION-ACTIVATE") {
+        basic("basic-auth-FUNCTION/ACTIVATE") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionActivate))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
-        basic("basic-auth-FUNCTION-DEACTIVATE") {
+        basic("basic-auth-FUNCTION/DEACTIVATE") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionDeactivate))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
-        basic("basic-auth-AI-GENERATE") {
+        basic("basic-auth-AI/GENERATE") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.AiGenerate))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)

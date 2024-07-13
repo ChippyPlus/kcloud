@@ -24,7 +24,7 @@ fun Application.configureAIhRouting() {
     routing {
 
 
-        authenticate("basic-auth") {
+        authenticate("basic-auth-AI/GENERATE") {
             post("/ai/ollama/generate") {
                 if (!checkAISupport()) {
                     call.respond(message = mapOf("error" to "BadArch"), status = HttpStatusCode.InternalServerError)
