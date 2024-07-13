@@ -6,5 +6,5 @@ enum class Endpoints {
     CryptKeyGen, CryptEncrypt, CryptDecrypt,
     StorageUpload, StorageDownload,
     FunctionUpload, FunctionDownload, FunctionActivate, FunctionDeactivate,
-
+    TimeGet,TimeReset,TimeIncrement,TimeDeterment,TimeSet
 }

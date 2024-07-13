@@ -7,6 +7,7 @@ import io.ktor.server.auth.*
 import io.ktor.util.*
 import kcloud.constants.Endpoints
 import kcloud.constants.Privileges
+import kcloud.constants.getPrivilege
 import kcloud.kcloudHome
 import java.io.File
 
@@ -135,6 +136,36 @@ fun Application.configureSecurity() {
         basic("basic-auth-CRYPT/DECRYPT") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.CryptDecrypt))
+                UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
+            }
+        }
+        basic("basic-auth-TIME/GET") {
+            validate { credentials ->
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeGet))
+                UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
+            }
+        }
+        basic("basic-auth-TIME/SET") {
+            validate { credentials ->
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeSet))
+                UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
+            }
+        }
+        basic("basic-auth-TIME/RESET") {
+            validate { credentials ->
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeReset))
+                UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
+            }
+        }
+        basic("basic-auth-TIME/INCREMENT") {
+            validate { credentials ->
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeIncrement))
+                UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
+            }
+        }
+        basic("basic-auth-TIME/DECREMENT") {
+            validate { credentials ->
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeDeterment))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }

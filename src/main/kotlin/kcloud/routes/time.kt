@@ -54,10 +54,12 @@ suspend fun count() {
 fun Application.configureTimeRouting() {
     GlobalScope.launch { count() }
     routing {
-        authenticate("basic-auth") {
+        authenticate("basic-auth-TINE/GET") {
             get("/time/get") {
                 call.respond(message = mapOf("message" to timeChannel.get()))
             }
+        }
+        authenticate("basic-auth-TIME/RESET") {
             put("/time/reset") {
                 timeChannel.reset()
                 val timeBefore = timeChannel.get()
@@ -65,6 +67,8 @@ fun Application.configureTimeRouting() {
                     message = mapOf("message" to "updated", "before" to timeBefore)
                 )
             }
+        }
+        authenticate("basic-auth-TIME/INCREMENT") {
             patch("/time/increment") {
                 val value = call.receive<Map<String, Int>>()["arg1"]!!
                 val timeBefore = timeChannel.get()
@@ -73,6 +77,8 @@ fun Application.configureTimeRouting() {
                     message = mapOf("message" to "updated", "before" to timeBefore, "after" to timeChannel.get())
                 )
             }
+        }
+        authenticate("basic-auth-TIME/DECREMENT") {
             patch("/time/decrement") {
                 val value = call.receive<Map<String, Int>>()["arg1"]!!
                 val timeBefore = timeChannel.get()
@@ -81,6 +87,8 @@ fun Application.configureTimeRouting() {
                     message = mapOf("message" to "updated", "before" to timeBefore, "after" to timeChannel.get())
                 )
             }
+        }
+        authenticate("basic-auth-TIME/SET") {
             put("/time/set") {
                 val value = call.receive<Map<String, Int>>()["arg1"]!!
                 val timeBefore = timeChannel.get()
