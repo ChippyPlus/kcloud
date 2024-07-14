@@ -4,8 +4,8 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.routing.*
-import kotlinx.html.FormEncType
 import kotlinx.html.*
+
 fun Application.configureRouting() {
     routing {
         get("/") {
@@ -18,7 +18,11 @@ fun Application.configureRouting() {
                 }
                 body {
                     h1 {
-                        +"Hello from $name!!!!!"
+                        + "Hello from $name!!!!!"
+                    }
+                    button {
+                        +"click me"
+                        attributes["oneClick"] = "alert('Hello!');"
                     }
                 }
             }

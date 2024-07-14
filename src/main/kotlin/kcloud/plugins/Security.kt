@@ -6,7 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.util.*
 import kcloud.constants.Endpoints
-import kcloud.constants.Privileges
+import kcloud.constants.PrivilegesInEndpointContext
 import kcloud.constants.getPrivilege
 import kcloud.kcloudHome
 import java.io.File
@@ -20,7 +20,6 @@ fun getUsersAndPasswords(userAuthData: Map<String, Any?>): Map<String, ByteArray
     for (user in userAuthData) {
         val data = user.value as Map<*, *>
         usersAndPasswords[user.key] = digestFunction(data["password"].toString())
-        println("USER: ${user.key} | USERDATA: $data")
     }
     return usersAndPasswords.toMap()
 }
@@ -47,7 +46,7 @@ fun check(items: Array<String>): MutableMap<String, ByteArray> {
 
 
 fun Application.configureSecurity() {
-    val allPrivileges = Privileges()
+    val allPrivilegesInEndpointContext = PrivilegesInEndpointContext()
     install(Authentication) {
         basic("basic-auth") {
             validate { credentials ->
@@ -64,7 +63,7 @@ fun Application.configureSecurity() {
         basic("basic-auth-MATH") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> =
-                    check(allPrivileges.getPrivilege(Endpoints.MathAny))
+                    check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.MathAny))
                 val hashedUserTable = UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction)
                 hashedUserTable.authenticate(credentials)
             }
@@ -72,7 +71,7 @@ fun Application.configureSecurity() {
         basic("basic-auth-STORAGE/UPLOAD") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> =
-                    check(allPrivileges.getPrivilege(Endpoints.StorageUpload))
+                    check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.StorageUpload))
                 val hashedUserTable = UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction)
                 hashedUserTable.authenticate(credentials)
             }
@@ -80,85 +79,85 @@ fun Application.configureSecurity() {
         basic("basic-auth-STORAGE/DOWNLOAD") {
             validate { credentials ->
                 val usersAndPasswords: MutableMap<String, ByteArray> =
-                    check(allPrivileges.getPrivilege(Endpoints.StorageDownload))
+                    check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.StorageDownload))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-FUNCTIONS/UPLOAD") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionUpload))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.FunctionUpload))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-FUNCTIONS/DOWNLOAD") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionDownload))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.FunctionDownload))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-FUNCTIONS/ACTIVATE") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionActivate))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.FunctionActivate))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-FUNCTIONS/DEACTIVATE") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.FunctionDeactivate))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.FunctionDeactivate))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-AI/GENERATE") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.AiGenerate))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.AiGenerate))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-CRYPT/KEYGENERATE") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.CryptKeyGen))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.CryptKeyGen))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-CRYPT/ENCRYPT") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.CryptEncrypt))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.CryptEncrypt))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-CRYPT/DECRYPT") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.CryptDecrypt))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.CryptDecrypt))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-TIME/GET") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeGet))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.TimeGet))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-TIME/SET") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeSet))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.TimeSet))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-TIME/RESET") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeReset))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.TimeReset))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-TIME/INCREMENT") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeIncrement))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.TimeIncrement))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }
         basic("basic-auth-TIME/DECREMENT") {
             validate { credentials ->
-                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivileges.getPrivilege(Endpoints.TimeDeterment))
+                val usersAndPasswords: MutableMap<String, ByteArray> = check(allPrivilegesInEndpointContext.getPrivilege(Endpoints.TimeDeterment))
                 UserHashedTableAuth(table = usersAndPasswords, digester = digestFunction).authenticate(credentials)
             }
         }

@@ -22,8 +22,6 @@ fun checkAISupport(): Boolean = System.getProperty("os.arch") != "armv61"
 
 fun Application.configureAIhRouting() {
     routing {
-
-
         authenticate("basic-auth-AI/GENERATE") {
             post("/ai/ollama/generate") {
                 if (!checkAISupport()) {
